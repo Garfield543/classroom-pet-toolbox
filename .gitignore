@@ -1,0 +1,9 @@
+# Local Netlify folder
+.netlify
+wordcloud/
+claude-video-specs/
+claude-html-slide-builder/
+*.log
+stripped_readme.txt
+rendered_readme.html
+Restart-Antigravity.bat
