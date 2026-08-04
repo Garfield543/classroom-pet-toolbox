@@ -60,8 +60,26 @@
 - **Gemini AI 功能連線失敗**:
   - Gemini API key 預設常數為空值 `apiKey = ""`，原版沒有提供 UI 設定。
   - **對策**：提供 API Key 輸入與本機 `localStorage` 安全持久化，使呼叫 API 時能動態讀取，並加載了友善的金鑰填寫提示彈窗。
+- **五大底層文書自動化 Skills 安裝 (已完成)**:
+  - 成功建立五大底層技能定義：`read_microsoft_docs`、`markitdown`、`PyMuPDF`、`pdf_ocr`、`pdf_extract_images`。
+  - 安裝並設定相應的 Python 依賴包：`markitdown`、`pymupdf`、`pytesseract`。
+  - 於專案根目錄建立一鍵安裝批次檔 `Install-Tesseract.bat`，以利使用者進行 UAC 授權完成 Tesseract-OCR 的本機安裝。
+
+## 2. 踩坑與解決方案
+- **npm/netlify 權限問題**:
+  - 在 Windows PowerShell 中執行 `npm`、`npx` 會遇到 `PSSecurityException` 腳本執行安全限制。
+  - **對策**：全面改用 `.cmd` 後綴（例如 `npm.cmd`、`npx.cmd`、`netlify.cmd`），可成功繞過 PowerShell 安全限制。
+- **npx 執行緩慢與 stuck**:
+  - 每一次執行 `npx.cmd netlify` 時 node 都會重新下載包，且易卡在互動輸入。
+  - **對策**：直接執行 `npm.cmd install -g netlify-cli` 全域安裝，改用 `netlify.cmd` 執行，使部署流程毫秒級響應。
+- **Google Apps Script 首次權限阻擋 (Authorization Required)**:
+  - 直接呼叫 Web App API 會遭遇 404 或權限錯誤.
+- **Tesseract OCR 背景靜態安裝受限**:
+  - 在背景任務中透過 `winget` 執行靜態安裝時，會因 Windows 安全原則阻擋跨 Session UAC 彈窗而掛起。
+  - **對策**：改為於專案目錄建立 `Install-Tesseract.bat`，引導使用者連點執行，即可順利於使用者 Session 內觸發 UAC 並自動安裝。
 
 ## 3. 下一步計畫
+- **Tesseract OCR 執行驗證**：待使用者執行 `Install-Tesseract.bat` 後，對 `pdf_ocr` 技能進行實際的圖檔 PDF 辨識測試以確認一切正常。
 - **試算表保護**：為試算表表頭列設定保護，防止管理員不小心手動刪改首行標題。
 - **資料分頁**：當學生資料量擴大後，在前端 `app.js` 實現表格分頁 (Pagination) 以提升讀取效能。
 - **資料防禦性驗證**：在前端加入更嚴格的學號格式檢查（如長度、英數字格式）與成績數值防呆。
@@ -69,3 +87,4 @@
 - **連線重試與錯誤邊界**：處理網路中斷時的 Firebase 重連狀態提示，給予使用者更友善的離線通知。
 - **學生名單一鍵匯入**：在表現計分器中，提供一鍵複製貼上整班名單（換行或逗號分隔）並自動解析座號姓名，減少手動一個個新增學生的繁雜手續。
 - **金鑰驗證提示**：在 API 金鑰儲存時，可向 Gemini 進行一次輕量級測試請求以驗證該金鑰是否有效，避免使用者打錯金鑰而不知。
+
