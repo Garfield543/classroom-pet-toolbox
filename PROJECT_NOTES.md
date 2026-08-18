@@ -48,6 +48,9 @@
 - **NotebookLM 自動建檔與批次上傳 (已完成)**:
   - 使用 `nlm` CLI 工具自動在使用者帳戶中新建名為「三師爸影片資料庫 (AI Agent / Claude / OpenCode / AntiGravity)」的筆記本。
   - 批次將 21 個清理好的字幕 Markdown 檔案上傳至該筆記本中，成功率 100%。
+- **歷年試題 Markdown 批次就地轉換 (已完成)**:
+  - 遍歷並解析 `教學素材\低年級歷年試題` 中的 597 個試卷檔案（包括 `.doc`、`.docx`、`.pdf`）。
+  - 在同目錄下成功就地生成對應的 `.md` 格式純文字檔，以利於 AI 後續分析與題目生成。
 
 ## 2. 踩坑與解決方案
 - **npm/netlify 權限問題**:
@@ -95,8 +98,14 @@
   - 在 CLI 執行 `print` 印出含有特殊字元（如日文字元 `・`）的影片標題時，會因 CP950 編碼報錯。
   - **對策**：以 UTF-8 開啟檔案寫入並避免直接在 stdout 印出特殊字串，順利解決。
 - **共享筆記本（唯讀）寫入權限不足 (NotebookLM Permission Denied)**:
-  - 嘗試將檔案上傳至使用者帳戶中被分享的唯讀筆記本「三師爸影片資料庫｜任務拆解顧問」時遇到 `PERMISSION_DENIED` 錯誤。
+  - 嘗試將檔案上傳至使用者帳戶中被分享的唯讀筆記本「三師爸影片資料庫｜任務拆解顧問」時遇到 `PERMISSION_DENIED` 錯誤.
   - **對策**：使用 `nlm notebook create` 直接為使用者建立同名的新筆記本，取得完全控制權後即可成功批次上傳所有字幕檔。
+- **舊版 Word 檔案受 Office 檔案封鎖限制而無法透過 COM 載入**:
+  - **狀況**：開啟 `100_首冊第1-10課.doc` 時背景 Word COM 因 Protected View 安全策略阻擋而拋出異常。
+  - **對策**：實作 OLE 二進位文字串提取修復邏輯，直接從二進位資料中提取出底層 UTF-16 繁體中文字串並完成 `.md` 存檔。
+- **系統暫存檔案 Thumbs.db 命名錯誤偽裝成 docx**:
+  - **狀況**：解析 `108_一下期中平時卷_一下國卷1-3.docx` 時 python-docx 拋出 `PackageNotFoundError`。經 binary 檢測其 Magic Number，發現其內容實際上是 Windows 系統縮圖資料庫 `Thumbs.db`。
+  - **對策**：在對應的 `.md` 中標註說明其為 Thumbs.db 系統快取，無文字提取，防範系統垃圾檔混淆。
 
 ## 3. 下一步計畫
 - **NotebookLM 來源標籤化 (Source Labeling)**:
