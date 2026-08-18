@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<title>三國驚險生死關頭 — 七步詩的由來</title>
+<style>
+  @font-face { font-family: 'GenSeki TW'; src: url('../claude-video-specs/assets/fonts/GenSekiGothic2TW-M.otf') format('opentype'); font-weight: 500; font-display: block; }
+  @font-face { font-family: 'GenSeki TW'; src: url('../claude-video-specs/assets/fonts/GenSekiGothic2TW-B.otf') format('opentype'); font-weight: 700; font-display: block; }
+  @font-face { font-family: 'GenSeki TW'; src: url('../claude-video-specs/assets/fonts/GenSekiGothic2TW-H.otf') format('opentype'); font-weight: 900; font-display: block; }
+
+  :root {
+    --paper: #FAF7EE; --paper-2: #F2EDDC; --ink: #1A1A1A;
+    --teal: #0E7C7B; --coral: #E36414; --gold: #C8941F;
+    --neon: #FFD23F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%; background: #000; overflow: hidden;
+    font-family: 'GenSeki TW', sans-serif; font-weight: 500; color: var(--ink);
+  }
+  .stage { position: fixed; inset: 0; background: var(--paper); }
+  .slide {
+    position: absolute; inset: 0; opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease; overflow: hidden;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  .chapter {
+    position: absolute; top: 30px; left: 48px; z-index: 5;
+    font-family: 'GenSeki TW'; font-weight: 700; font-size: 22px;
+    letter-spacing: 0.16em;
+  }
+  .chapter .num {
+    background: var(--teal); color: #fff; padding: 4px 14px;
+    border-radius: 4px; font-weight: 900; margin-right: 10px;
+  }
+  .chapter.on-dark { color: rgba(255,255,255,0.85); }
+
+  /* 字幕（社群放大版 36px）*/
+  .subtitle {
+    position: absolute; left: 50%; bottom: 50px; transform: translateX(-50%);
+    max-width: 90%; padding: 18px 40px; border-radius: 12px;
+    background: rgba(26,26,26,0.92); color: #fff;
+    font-weight: 700; font-size: 36px; line-height: 1.4;
+    text-align: center; opacity: 0; transition: opacity 0.4s ease;
+    z-index: 10;
+  }
+  .subtitle.show { opacity: 1; }
+
+  /* 進度條 8px */
+  .progress {
+    position: absolute; left: 0; bottom: 0; height: 8px;
+    background: linear-gradient(90deg, var(--teal), var(--neon));
+    width: 0%; transition: width 0.2s linear; z-index: 11;
+  }
+
+  /* 開場 */
+  .start-screen {
+    position: fixed; inset: 0; background: var(--ink); color: var(--paper);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 999; cursor: pointer; gap: 40px;
+  }
+  .start-screen .t { font-weight: 900; font-size: 140px; letter-spacing: 0.08em; line-height: 1.2; text-align: center; }
+  .start-screen .s { font-size: 26px; color: rgba(250,247,238,0.6); font-weight: 700; }
+  .start-screen .play {
+    width: 96px; height: 96px; border: 3px solid var(--neon);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: var(--neon); transition: all 0.3s;
+  }
+  .start-screen:hover .play { background: var(--neon); color: var(--ink); }
+  .start-screen.hidden { display: none; }
+
+  /* ㄅ注音芫荽字型類別 */
+  .bopomofo {
+    font-family: 'ㄅ注音芫荽 Regular', 'Bpmf Iansui', '芫荽', 'GenSeki TW', sans-serif;
+    font-weight: 700;
+  }
+
+  /* ===== L5 純大字 ===== */
+  .L5 { background: var(--ink); color: var(--paper);
+        display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px; }
+  .L5 .big {
+    font-weight: 900; font-size: 160px; line-height: 1.25;
+    letter-spacing: 0.04em;
+  }
+  .L5 .accent { color: var(--neon); }
+  .L5 .small { font-size: 40px; color: rgba(250,247,238,0.7); margin-top: 40px; font-weight: 700; }
+
+  /* ===== L2 左右並列 ===== */
+  .L2 { display: grid; grid-template-columns: 1fr 1fr; }
+  .L2 .col-img {
+    background-size: cover; background-position: center;
+    position: relative;
+  }
+  .L2 .col-img::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 60%, var(--paper) 100%);
+  }
+  .L2 .col-text {
+    background: var(--paper); padding: 100px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .L2 .label {
+    font-size: 24px; font-weight: 700; letter-spacing: 0.3em;
+    color: var(--coral); margin-bottom: 24px;
+  }
+  .L2 .head {
+    font-size: 96px; font-weight: 900; line-height: 1.15; color: var(--ink);
+    margin-bottom: 30px;
+  }
+  .L2 .head .hl { color: var(--teal); }
+  .L2 .body { font-size: 36px; font-weight: 700; color: #333; line-height: 1.5; }
+
+  /* ===== L3 圖示陣列 ===== */
+  .L3 { background: var(--paper); padding: 100px 80px 140px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .L3 h2 {
+    font-size: 88px; font-weight: 900; color: var(--ink);
+    text-align: center; margin-bottom: 60px; line-height: 1.1;
+  }
+  .L3 h2 .hl { color: var(--coral); }
+  .L3 .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%;
+  }
+  .L3 .item {
+    background: #fff; border: 4px solid var(--ink); border-radius: 16px;
+    padding: 40px 28px; text-align: center;
+    opacity: 0; transform: translateY(30px); transition: all 0.6s ease;
+  }
+  .L3.active .item { opacity: 1; transform: translateY(0); }
+  .L3.active .item:nth-child(1) { transition-delay: 0.5s; }
+  .L3.active .item:nth-child(2) { transition-delay: 1.2s; }
+  .L3.active .item:nth-child(3) { transition-delay: 1.9s; }
+  .L3 .item .ic { font-size: 88px; line-height: 1; }
+  .L3 .item .lb {
+    font-size: 40px; font-weight: 900; color: var(--teal); margin-top: 20px;
+  }
+  .L3 .item .desc { font-size: 26px; color: #333; margin-top: 10px; font-weight: 700; }
+
+  /* ===== L4 SVG 置中 ===== */
+  .L4 { background: var(--paper); padding: 80px 80px 140px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .L4 h2 {
+    font-size: 88px; font-weight: 900; color: var(--ink);
+    text-align: center; margin-bottom: 30px; line-height: 1.1;
+  }
+  .L4 h2 .hl { color: var(--coral); }
+  .L4 svg { display: block; }
+
+  /* ===== Slide 特定 ===== */
+  .s2 .col-img { background-image: url('assets/images/palace.jpg'); }
+  .s3 .col-img { background-image: url('assets/images/palace.jpg'); }
+  .s4 .col-img { background-image: url('assets/images/palace.jpg'); }
+  .s8 .col-img { background-image: url('assets/images/pot.jpg'); }
+  .s9 .col-img { background-image: url('assets/images/palace.jpg'); }
+
+  /* SVG 動畫元素 */
+  .anim { opacity: 0; transform: scale(0.6); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .anim.in { opacity: 1; transform: scale(1); }
+
+  /* 飄入 token 粒子（slide 1）*/
+  .tokens { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .tokens span {
+    position: absolute; color: rgba(255,210,63,0.15);
+    font-weight: 900; font-family: 'GenSeki TW';
+    animation: floatUp 6s linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(110vh); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="start-screen" id="startScreen">
+  <div class="t">三國生死挑戰<br>七步詩</div>
+  <div class="play"><svg width="28" height="32" viewBox="0 0 24 28"><path d="M2 2 L22 14 L2 26 Z" fill="currentColor"/></svg></div>
+  <div class="s">社群科普 · 點擊開始 · 約 1:45</div>
+</div>
+
+<div class="stage" id="stage">
+
+  <!-- ===== Slide 1 — Hook L5 ===== -->
+  <div class="slide L5 s1">
+    <div class="tokens" id="tokens"></div>
+    <div style="position:relative;z-index:1;">
+      <div class="big">差點被親哥哥殺死？<br>史上最驚險的<span class="accent">作詩挑戰</span>！</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 2 — L2 曹丕與曹植 ===== -->
+  <div class="slide L2 s2">
+    <div class="chapter"><span class="num">02</span> / 11 — 權力與嫉妒</div>
+    <div class="col-img"></div>
+    <div class="col-text">
+      <div class="label">背景故事</div>
+      <div class="head"><span class="hl">曹丕 vs. 曹植</span><br>兄弟的決裂。</div>
+      <div class="body">三國時期，曹丕繼承王位當上皇帝。但他深深嫉妒弟弟曹植的絕世才華，一心想藉機除掉他。</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 3 — L2 逼迫命令 ===== -->
+  <div class="slide L2 s3">
+    <div class="chapter"><span class="num">03</span> / 11 — 生死限制</div>
+    <div class="col-img"></div>
+    <div class="col-text">
+      <div class="label">絕命指令</div>
+      <div class="head">「七步之內，<br><span class="hl">寫不出就斬！</span>」</div>
+      <div class="body">在大殿上，曹丕當眾逼迫曹植：「限你在走完七步之內作出一首詩，否則立刻處死！」</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 4 — L2 嚴苛條件 ===== -->
+  <div class="slide L2 s4">
+    <div class="chapter"><span class="num">04</span> / 11 — 苛刻考驗</div>
+    <div class="col-img"></div>
+    <div class="col-text">
+      <div class="label">題目與限制</div>
+      <div class="head">主題是「手足」<br><span class="hl">但不能有「兄弟」！</span></div>
+      <div class="body">曹丕定下最刁難的規則：詩意要寫兄弟情誼，但字面裡卻不准出現任何一個「兄」或「弟」字。</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 5 — L4 邁步動畫 ===== -->
+  <div class="slide L4 s5">
+    <div class="chapter"><span class="num">05</span> / 11 — 步履維艱</div>
+    <h2>邁出步履……生死邊緣</h2>
+    <svg width="1400" height="320" viewBox="0 0 1400 320">
+      <path d="M 100 160 Q 200 130 300 100 T 500 160 T 700 100 T 900 160 T 1100 100 T 1300 160" fill="none" stroke="#1A1A1A" stroke-width="4" stroke-dasharray="10 10"/>
+      <!-- Step 1 -->
+      <g class="anim" data-d="0" transform="translate(100, 160)">
+        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#E36414"/>
+        <text x="0" y="8" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="GenSeki TW">1</text>
+      </g>
+      <!-- Step 2 -->
+      <g class="anim" data-d="1200" transform="translate(300, 100)">
+        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#0E7C7B"/>
+        <text x="0" y="8" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="GenSeki TW">2</text>
+      </g>
+      <!-- Step 3 -->
+      <g class="anim" data-d="2400" transform="translate(500, 160)">
+        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#E36414"/>
+        <text x="0" y="8" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="GenSeki TW">3</text>
+      </g>
+      <!-- Step 4 -->
+      <g class="anim" data-d="3600" transform="translate(700, 100)">
+        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#0E7C7B"/>
+        <text x="0" y="8" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="GenSeki TW">4</text>
+      </g>
+      <!-- Step 5 -->
+      <g class="anim" data-d="4800" transform="translate(900, 160)">
+        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#E36414"/>
+        <text x="0" y="8" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="GenSeki TW">5</text>
+      </g>
+      <!-- Step 6 -->
+      <g class="anim" data-d="6000" transform="translate(1100, 100)">
+        <ellipse cx="0" cy="0" rx="30" ry="18" fill="#0E7C7B"/>
+        <text x="0" y="8" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="GenSeki TW">6</text>
+      </g>
+      <!-- Step 7 -->
+      <g class="anim" data-d="7200" transform="translate(1300, 160)">
+        <ellipse cx="0" cy="0" rx="35" ry="22" fill="#FFD23F" stroke="#1A1A1A" stroke-width="4"/>
+        <text x="0" y="8" text-anchor="middle" font-size="28" font-weight="900" fill="#1A1A1A" font-family="GenSeki TW">7</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ===== Slide 6 — L5 Poem 1 (Bopomofo) ===== -->
+  <div class="slide L5 s6 bopomofo">
+    <div class="chapter"><span class="num">06</span> / 11 — 七步成詩</div>
+    <div style="position:relative;z-index:1;">
+      <div class="big" style="font-size: 140px;">煮豆燃豆萁，<br>豆在釜中泣。</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 7 — L5 Poem 2 (Bopomofo) ===== -->
+  <div class="slide L5 s7 bopomofo">
+    <div class="chapter"><span class="num">07</span> / 11 — 七步成詩</div>
+    <div style="position:relative;z-index:1;">
+      <div class="big" style="font-size: 140px;">本是同根生，<br>相󠇡煎何太急！</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 8 — L2 詩意比喻 ===== -->
+  <div class="slide L2 s8">
+    <div class="chapter"><span class="num">08</span> / 11 — 詩意解析</div>
+    <div class="col-img"></div>
+    <div class="col-text">
+      <div class="label">悲傷的比喻</div>
+      <div class="head">豆萁煮豆：<br><span class="hl">同根相煎的痛苦</span></div>
+      <div class="body">豆萁與豆子本是同一個根長出來的，豆萁當作柴火燃燒，卻是為了把鍋裡的豆子煮熟。這正是兄弟相殘的無情寫照。</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 9 — L2 結局收尾 ===== -->
+  <div class="slide L2 s9">
+    <div class="chapter"><span class="num">09</span> / 11 — 皇室的結局</div>
+    <div class="col-img"></div>
+    <div class="col-text">
+      <div class="label">結局</div>
+      <div class="head">曹丕羞愧，<br><span class="hl">流淚釋放</span></div>
+      <div class="body">曹丕聽完這首意境深遠又無比沉痛的詩，感到羞愧難當，當場流下了眼淚，最終放了曹植一條生路。</div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 10 — L3 文學價值 ===== -->
+  <div class="slide L3 s10">
+    <div class="chapter"><span class="num">10</span> / 11 — 文學密碼</div>
+    <h2>「七步詩」的 <span class="hl">3 個文學啟示</span></h2>
+    <div class="grid">
+      <div class="item">
+        <div class="ic">🤝</div>
+        <div class="lb">手足情深</div>
+        <div class="desc">以豆和萁深刻表達兄弟之情</div>
+      </div>
+      <div class="item">
+        <div class="ic">🔥</div>
+        <div class="lb">精妙比喻</div>
+        <div class="desc">用生活中的烹飪場景寫出沉痛</div>
+      </div>
+      <div class="item">
+        <div class="ic">💡</div>
+        <div class="lb">絕境才華</div>
+        <div class="desc">生死交關下所能迸發的極致才華</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Slide 11 — L5 結語 ===== -->
+  <div class="slide L5 s11">
+    <div class="big">珍惜身邊親人，<br>別讓競爭傷了<span class="accent">手足</span>。</div>
+    <div class="small">— 本是同根生，相煎何太急 —</div>
+  </div>
+
+  <div class="subtitle" id="subtitle"></div>
+</div>
+<div class="progress" id="progress"></div>
+<audio id="audio" preload="auto"></audio>
+
+<script>
+const PAGES = [
+  { i: 1, dur: 8.6, sub:"差點被親哥哥殺死？這絕對是史上最驚險的作詩挑戰！" },
+  { i: 2, dur: 11.0, sub:"三國時期，魏國的曹丕當上了皇帝。但他嫉妒弟弟曹植的絕世才華，一心想要除掉他。" },
+  { i: 3, dur: 10.1, sub:"在大殿上，曹丕命令曹植：「限你走完七步之內，寫出一首詩，否則立刻處斬！」" },
+  { i: 4, dur: 8.6, sub:"而且，詩的主題是「兄弟」，但字面裡卻不能出現任何「兄」或「弟」字！" },
+  { i: 5, dur: 10.4, sub:"曹植深吸一口氣，開始在大殿上邁出第一步。每一步，都是生與死的邊緣。" },
+  { i: 6, dur: 9.0, sub:"就在走到第七步時，他高聲吟誦出：「煮豆燃豆萁，豆在釜中泣。」" },
+  { i: 7, dur: 5.8, sub:"「本是同根生，相󠇡煎何太急！」" },
+  { i: 8, dur: 9.2, sub:"他用豆萁燃燒和豆子在鍋裡哭泣作比喻，它們同是根部所生，為什麼要互相煎熬呢？" },
+  { i: 9, dur: 9.0, sub:"曹丕聽完，感到無比羞愧，當場流下了眼淚，最終放了曹植一條生路。" },
+  { i: 10, dur: 10.6, sub:"這首詩留下了深刻的文學啟示：它不只是一次絕境中的才華展現，更是一聲對手足相殘的痛心控訴。" },
+  { i: 11, dur: 11.7, sub:"本是同根生，相煎何太急。珍惜身邊的親人，別讓嫉妒和競爭傷害了最珍貴的手足感情！" }
+];
+
+const TOTAL = PAGES.reduce((s,p)=>s+p.dur, 0);
+const slides = document.querySelectorAll('.slide');
+const audio = document.getElementById('audio');
+const sub = document.getElementById('subtitle');
+const startScreen = document.getElementById('startScreen');
+const progress = document.getElementById('progress');
+
+// Slide 1 飄入 token 粒子
+const tokens = document.getElementById('tokens');
+const TOKENS = ['豆','萁','曹植','七步詩','同根生','相煎','急','釜','泣','三國','曹丕'];
+for (let i=0;i<22;i++) {
+  const s = document.createElement('span');
+  s.textContent = TOKENS[Math.floor(Math.random()*TOKENS.length)];
+  s.style.left = Math.random()*100 + '%';
+  s.style.fontSize = (28 + Math.random()*60) + 'px';
+  s.style.animationDuration = (5 + Math.random()*5) + 's';
+  s.style.animationDelay = (Math.random()*5) + 's';
+  tokens.appendChild(s);
+}
+
+// 動畫觸發（依 data-d 延遲）
+function triggerAnims(slideEl) {
+  const anims = slideEl.querySelectorAll('.anim');
+  anims.forEach(el => el.classList.remove('in'));
+  anims.forEach(el => {
+    const d = parseInt(el.dataset.d || '0', 10);
+    setTimeout(() => el.classList.add('in'), d);
+  });
+}
+
+// 計算每張投影片的起始時間
+const startTimes = [];
+let accum = 0;
+for (let i = 0; i < PAGES.length; i++) {
+  startTimes.push(accum);
+  accum += PAGES[i].dur;
+}
+
+let currentSlide = -1;
+let rafId = null;
+
+function showSlide(i) {
+  slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+  sub.textContent = PAGES[i].sub;
+  sub.classList.add('show');
+  triggerAnims(slides[i]);
+  
+  // 特別處理 L3 active 觸發，用於 grid 動畫顯示
+  if (slides[i].classList.contains('L3')) {
+    slides[i].classList.add('active');
+  } else {
+    document.querySelectorAll('.L3').forEach(el => el.classList.remove('active'));
+  }
+}
+
+function tick() {
+  const currTime = audio.currentTime;
+  
+  // 找出目前時間對應的投影片索引
+  let activeIndex = 0;
+  for (let i = 0; i < startTimes.length; i++) {
+    if (currTime >= startTimes[i]) {
+      activeIndex = i;
+    }
+  }
+  
+  if (activeIndex !== currentSlide && activeIndex < PAGES.length) {
+    currentSlide = activeIndex;
+    showSlide(currentSlide);
+  }
+  
+  // 更新進度條
+  const totalProg = currTime / TOTAL;
+  progress.style.width = (Math.min(totalProg, 1) * 100) + '%';
+  
+  if (currTime >= TOTAL) {
+    cancelAnimationFrame(rafId);
+    sub.classList.remove('show');
+    return;
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const autoplay = urlParams.get('autoplay') === 'true';
+
+if (autoplay) {
+  startScreen.classList.add('hidden');
+  document.fonts.ready.then(() => {
+    audio.src = 'renders/master_audio.mp3';
+    audio.play().catch(()=>{});
+    tick();
+  });
+} else {
+  startScreen.addEventListener('click', () => {
+    startScreen.classList.add('hidden');
+    
+    // 撥放單一的 master_audio.mp3
+    audio.src = 'renders/master_audio.mp3';
+    audio.play().catch(()=>{});
+    
+    setTimeout(() => {
+      tick();
+    }, 200);
+  });
+}
+</script>
+</body>
+</html>

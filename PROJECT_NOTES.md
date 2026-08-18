@@ -57,6 +57,15 @@
   - **字音字形防呆與最佳化**：對寫國字格套用 `書法空白加框（注音一/破音二/破音三/破音四）`、寫注音格套用 `書法中楷加框（注音填空）`，生字大小改為 **24 pt**，一般文字為 **14 pt**，行高為 **30 pt**，避免換行雜亂。
   - **溢頁與段落排版最佳化**：第一頁列高 8.4 cm，第二頁列高 8.2 cm，配合 1.5 cm 的上下邊距與尾頁段落縮小（1 pt）防禦機制，解決 Word 空白尾頁溢出問題，精準產出 **2 頁 PDF**。
   - 將產出檔案成功儲存至使用者指定的目標路徑：`D:\OneDrive\萍\115.二上\115二上國語L1～L6測試版.docx` 與 `.pdf`。
+- **115二上聯絡簿詩集.docx 生成 (115學年度二上)**:
+  - 仿照 113 學年度版本格式，成功生成包含 22 首詩的 A4 橫向雙欄、精密行高 `45.0 pt` 排版之聯絡簿詩集。
+  - 精準手動修正破音字注音（如「朝」、「一」、「不」、「行」等），藉由 Unicode 異體字選擇子（IVS）對齊 `ㄅ注音芫荽 Regular` 字型，維持專名號與書名號。
+  - 將產出文件保存至：`D:\OneDrive\萍\115.二上\115二上聯絡簿詩集.docx`。
+- **「七步詩」社群科普動畫影片製作 (Type 03)**:
+  - 建立專案目錄 `qibushi-video`，設計 11 幕社群科普動畫短片。
+  - 生成 `ㄅ注音芫荽 Regular` 注音字體詩句畫面、動態 SVG 走步路徑，並使用 AI 生成三國宮殿 `palace.jpg` 及大鐵鍋煮豆 `pot.jpg` 背景插畫。
+  - 採用台灣男聲語音旁白（TTS），並以 `audio.currentTime` 全域時鐘及 Playwright 自主播放參數 `?autoplay=true` 重新錄製，完美解決 Headless 渲染下的 1.5 秒畫音對不齊偏移。
+  - 最終封裝出 `final.mp4`（時長 1 分 44 秒）。
 
 ## 2. 踩坑與解決方案
 - **npm/netlify 權限問題**:
@@ -112,6 +121,11 @@
 - **系統暫存檔案 Thumbs.db 命名錯誤偽裝成 docx**:
   - **狀況**：解析 `108_一下期中平時卷_一下國卷1-3.docx` 時 python-docx 拋出 `PackageNotFoundError`。經 binary 檢測其 Magic Number，發現其內容實際上是 Windows 系統縮圖資料庫 `Thumbs.db`。
   - **對策**：在對應的 `.md` 中標註說明其為 Thumbs.db 系統快取，無文字提取，防範系統垃圾檔混淆。
+- **Playwright 背景錄製音畫不同步 (Lag & Offset)**:
+  - **狀況**：Playwright 錄影包含瀏覽器初始化與點擊 startScreen 的等待時間，導致音軌在影片 0 秒播放但視覺畫面延後 1.5 秒啟動。
+  - **對策**：利用 `?autoplay=true` 網頁參數與 `document.fonts.ready` 監聽直接自動播放，並在 JS 端使用 `audio.currentTime` 全域時域取代 `performance.now()` 推動投影片切換，成功對齊音畫。
+- **PowerShell 執行 npm/npx 被 Execution Policy 阻擋**:
+  - **對策**：改用 `npm.cmd` 與 `npx.cmd` 來呼叫指令，避開 PowerShell 腳本簽章安全原則限制。
 
 ## 3. 下一步計畫
 - **NotebookLM 來源標籤化 (Source Labeling)**:

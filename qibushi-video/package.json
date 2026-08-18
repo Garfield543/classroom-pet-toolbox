@@ -1,0 +1,16 @@
+{
+  "name": "qibushi-video",
+  "version": "1.0.0",
+  "description": "**規範**：[../../specs/03-社群科普影片.md](../../specs/03-社群科普影片.md)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}
