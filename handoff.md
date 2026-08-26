@@ -1,20 +1,23 @@
-﻿# 專案交接紀錄 (Handoff)
+# 專案交接紀錄 (Handoff)
 
-- **更新時間**：2026-08-26 23:59
-- **專案名稱**：classroom-pet-toolbox / teacher-toolkit
+- **更新時間**：2026-08-27 00:05
+- **專案名稱**：classroom-pet-toolbox
 
 ## ⏯️ 目前進度 / 上次做到哪
-- 完成 RDQ Method（需求探索四象限法）技能的安裝、機制解析與環境適配。
-- 已將 RDQ 技能部署至 Claude Code（`~/.claude/skills/rdq`）與 Google AntiGravity（`~/.gemini/config/skills/rdq`）。
+1. 完成跨 Agent（ChatGPT App / Codex、Claude Code、AntiGravity）的核心工作流技能升級與同步（`startup`、`shutdown`、`project-init`）。
+2. 全面更新收工流程：自動在專案根目錄生成並維護 `handoff.md`，開工時支援讀取 `handoff.md` 或 Obsidian 筆記銜接進度。
+3. 盤點並為 Claude Code 與 Codex 安裝補齊 11 項教學教材、文書文件與 PDF/OCR 技能工具（`lesson-planner`, `quiz-generator`, `knowledge-card-generator`, `html-slide-builder`, `document-formatter`, `calendar-csv-generator`, `read_microsoft_docs`, `PyMuPDF`, `pdf_extract_images`, `pdf_ocr`, `markitdown`）。
 
 ## ➡️ 下一步建議 (Next Steps)
-1. 在未來的教學工具開發、教材編寫或大型任務時，輸入「`用 RDQ`」體驗需求訪談與一頁規格卡。
-2. 依實際教學與開發需求，於 `~/.gemini/config/skills/rdq/references/question-bank.md` 自訂專屬踩雷題庫。
+1. 在 Claude Code 或 ChatGPT App 中測試執行各項新安裝的教學與文書技能（例如 `lesson-planner` 或 `quiz-generator`）。
+2. 依專案需求接續課堂寵物工具箱或各項子模組開發。
 
 ## 📝 本次主要更動
-- `~/.claude/skills/rdq/`：Clone 原版 RDQ Method 技能。
-- `~/.gemini/config/skills/rdq/`：複製並啟用 AntiGravity 專用 RDQ 技能。
-- `G:\我的雲端硬碟\secondbrain\teacher-toolkit\工作筆記.md`：同步更新進度與工具清單。
+- `~/.codex/skills/`：建立 14 項技能之 `SKILL.md` 與 `agents/openai.yaml`。
+- `~/.claude/skills/` & `~/.claude-skills/`：安裝並同步 14 項技能。
+- `~/.gemini/config/skills/`：更新 `startup`, `shutdown`, `project-init`, `05-workflow`。
+- 專案根目錄：生成 `./handoff.md`。
+- Obsidian Vault：建立/更新 `classroom-pet-toolbox/工作筆記.md`。
 
 ## 🕳️ 踩坑與注意事項
-- AntiGravity 原生支援 `SKILL.md` 規範與 `ask_question` 結構化互動，使用 Claude 版原汁原味的 RDQ 體驗最完整，不需使用純文字降級版。
+- 各 Agent 技能設定檔已完成 Windows cp950 / UTF-8 編碼相容處理，跨平台調用正常。
