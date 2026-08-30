@@ -1,23 +1,21 @@
 # 專案交接紀錄 (Handoff)
 
-- **更新時間**：2026-08-27 00:05
+- **更新時間**：2026-08-31 00:30
 - **專案名稱**：classroom-pet-toolbox
 
 ## ⏯️ 目前進度 / 上次做到哪
-1. 完成跨 Agent（ChatGPT App / Codex、Claude Code、AntiGravity）的核心工作流技能升級與同步（`startup`、`shutdown`、`project-init`）。
-2. 全面更新收工流程：自動在專案根目錄生成並維護 `handoff.md`，開工時支援讀取 `handoff.md` 或 Obsidian 筆記銜接進度。
-3. 盤點並為 Claude Code 與 Codex 安裝補齊 11 項教學教材、文書文件與 PDF/OCR 技能工具（`lesson-planner`, `quiz-generator`, `knowledge-card-generator`, `html-slide-builder`, `document-formatter`, `calendar-csv-generator`, `read_microsoft_docs`, `PyMuPDF`, `pdf_extract_images`, `pdf_ocr`, `markitdown`）。
+1. 實現「同步與備份」功能一鍵大整合：重寫 `exportData()` 與 `importData()`，現在點擊主畫面最下方的「同步與備份」即可將「表現計分器、作業追蹤器、潔牙表、考試計時器與班級寵物」的所有資料（包含金鑰與音效設定）一鍵打包為單一備份檔案。
+2. 保持向下相容：匯入舊版只包含「班級資料」的 JSON 時，自動進行相容解析，不影響或覆寫現有的寵物資料庫。
+3. 全功能通過 Selenium 自動化整合測試（`test_backup_unification.py`），並已編譯、同步至 GitHub 與部署上線至 Netlify。
 
 ## ➡️ 下一步建議 (Next Steps)
-1. 在 Claude Code 或 ChatGPT App 中測試執行各項新安裝的教學與文書技能（例如 `lesson-planner` 或 `quiz-generator`）。
-2. 依專案需求接續課堂寵物工具箱或各項子模組開發。
+1. 在表現計分器中，提供一鍵複製貼上整班名單（換行或逗號分隔）並自動解析座號姓名，減少手動一個個新增學生的繁雜手續。
+2. 在 API 金鑰儲存時，可向 Gemini 進行一次輕量級測試請求以驗證該金鑰是否有效，避免使用者打錯金鑰而不知。
 
 ## 📝 本次主要更動
-- `~/.codex/skills/`：建立 14 項技能之 `SKILL.md` 與 `agents/openai.yaml`。
-- `~/.claude/skills/` & `~/.claude-skills/`：安裝並同步 14 項技能。
-- `~/.gemini/config/skills/`：更新 `startup`, `shutdown`, `project-init`, `05-workflow`。
-- 專案根目錄：生成 `./handoff.md`。
-- Obsidian Vault：建立/更新 `classroom-pet-toolbox/工作筆記.md`。
+- `scratch/claude_main_script.js`：修改 `exportData` 和 `importData` 以讀寫和整合班級寵物 LocalStorage 屬性。
+- `compile_complete_pet.py`：新增輸出 `index.html`（根目錄）輸出通道，便於 Pages 託管。
+- `public/index.html`、`index.html`、`班級經營工具箱.html`：整合後重新編譯。
 
 ## 🕳️ 踩坑與注意事項
-- 各 Agent 技能設定檔已完成 Windows cp950 / UTF-8 編碼相容處理，跨平台調用正常。
+- **LocalStorage 異步清空與 auto-initialize**：執行 `localStorage.clear()` 重載後，APP 會自動套用並儲存預設班級狀態（`我的班級` 等），因此斷言時需檢查其是否為預設狀態而非 None。
