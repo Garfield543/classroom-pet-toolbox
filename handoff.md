@@ -1,25 +1,27 @@
 # 專案交接紀錄 (Handoff)
 
-- **更新時間**：2026-09-11 23:18
+- **更新時間**：2026-09-14 23:50
 - **專案名稱**：classroom-pet-toolbox
 
 ## ⏯️ 目前進度 / 上次做到哪
-1. 修復作業追蹤器項目刪除與表格同步問題：
-   - 實現 `migrateHomeworkRecords` 智慧遷移機制，依照作業名稱保留打勾狀態，防止索引位移造成紀錄錯亂。
-   - 解決「文字框刪除項目後點擊產生表格未同步」問題，點擊「產生表格(全勾/全叉)」時若設定抽屜開啟會自動先同步輸入內容。
-   - 在每個作業欄位表頭加入小叉叉 `✖` 快速刪除按鈕，可直接在表格上刪除作業項目。
-   - 修正防呆限制，支援將作業項目完全清空並展示友善提示。
-2. 自動化測試驗證：通過完整 Selenium 測試套件（`test_hw_sync_suite.py`），並已編譯、推送 GitHub 與部署至 Netlify 生產環境。
+1. 依據使用者「專案初始化」指令與 RDQ 訪談，在 Google Drive 建立新專案目錄 `G:\我的雲端硬碟\低年級寫作學習單\` 與 Obsidian 第二大腦工作筆記。
+2. 突破 Word 注音字型技術：利用 `python-docx` 注入 `w:eastAsia="Bpmf Iansui Regular"` 屬性，實現 100% 準確直式注音渲染與 IVS 破音字校正。
+3. 產出兩套國小低年級寫作教材（Word + PDF）：
+   - 《看圖寫話與好句子魔法學習單》（學生練習版 + 教師示範版，精準單頁 A4 無溢頁）。
+   - 《一起做○○》黑白素描塗鴉筆記填空學習單（融合親子共學引導單、塗鴉簿提示與料理圖鑑手繪線條，純黑白無色彩）。
+4. 交付檔案至 `D:\OneDrive\萍\115.二上\塗鴉簿\一起做OO\`、`D:\OneDrive\圖片\` 與 `G:\我的雲端硬碟\低年級寫作學習單\`。
 
 ## ➡️ 下一步建議 (Next Steps)
-1. 在表現計分器中，提供一鍵複製貼上整班名單（換行或逗號分隔）並自動解析座號姓名，減少手動逐筆輸入。
-2. 在 API 金鑰儲存時，加入輕量連線測試以驗證金鑰是否有效。
-3. 考慮在作業追蹤器表頭加入作業名稱快速就地編輯（Inline Edit）功能。
+1. 塗鴉簿寫作學習單課堂試教與學生書寫反饋檢核。
+2. 表現計分器名單批次匯入（換行/逗號解析）與金鑰連線輕量測試。
+3. 建立可重複套用的低年級學習單生成模板庫。
 
 ## 📝 本次主要更動
-- `scratch/claude_main_script.js`：重寫 `initHomeworkTool`，加入 `migrateHomeworkRecords`、表頭 `✖` 刪除邏輯與自動同步，修正 `ensureShape`。
-- `compile_complete_pet.py`：重新編譯生成 `public/index.html`、`index.html` 與 `班級經營工具箱.html`。
-- `walkthrough.md`：補充完整修復紀錄與 UI 截圖展示。
+- `build_worksheets.py`：生成學生版與教師示範版看圖寫話學習單。
+- `generate_doodle_worksheet.py`：生成《一起做○○》純黑白手繪素描塗鴉學習單。
+- `export_and_verify.py`：PDF 匯出與 PyMuPDF 單頁驗證。
+- `handoff.md`：更新本次進度交接紀錄。
 
 ## 🕳️ 踩坑與注意事項
-- **動態重新渲染事件綁定**：Selenium 測試連續點擊打勾儲存格時，因 `renderTable()` 會重新構建 `innerHTML`，後續選取必須重新自 DOM 查詢，避免在已 detach 的元素上觸發事件。
+- **Word 注音字型渲染 (Bpmf Iansui)**：Word 在處理中文字型時需指定 `w:eastAsia="Bpmf Iansui Regular"`，若僅設置西文字型屬性會退回系統預設細明體；透過 python-docx 直接注入 EastAsia 屬性可確保 100% 渲染正確繁體注音與調號。
+- **A4 單頁控高防溢出**：低年級單頁快練學習單需嚴格控制行高與表格內距（Cell Margins），避免列印時發生單行溢出到第二頁的問題；本專案透過 PyMuPDF 自動驗證頁數為 1 頁。
